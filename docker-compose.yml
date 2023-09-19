@@ -12,18 +12,21 @@ services:
       - ./app:/app
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
+    #these below should match the db environment vars
     environment:
       - DB_HOST=db
       - DB_NAME=dev-db
       - DB_USER=devuser
       - DB_PASS=changeme
     depends_on:
+    # waits for the db to start before starting the app service. if db service fails then app will too.
       - db
   
   db:
     image: postgres:13-alpine
     volumes:
       - dev-db-data:/var/lib/postgresql/data
+    # only for our local development, hence non secure password an username
     environment:
       - POSTGRES_DB=devdb
       - POSTGRES_USER=devuser
